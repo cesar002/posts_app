@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RegistroModule } from './modules/registro/registro.module';
-import { PostsModule } from './modules/posts/posts.module';
-import { ComentariosModule } from './modules/comentarios/comentarios.module';
+import { DatabaseconnectorModule } from './databaseconnector/databaseconnector.module';
+import { VistasModule } from './modules/vistas/vistas.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
-  imports: [RegistroModule, PostsModule, ComentariosModule],
-  controllers: [AppController],
+  imports: [DatabaseconnectorModule, VistasModule, AuthModule],
+  controllers: [AppController, ],
   providers: [AppService],
 })
 export class AppModule {}
