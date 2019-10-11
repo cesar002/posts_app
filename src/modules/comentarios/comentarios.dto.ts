@@ -1,1 +1,2 @@
-export class ComentariosDto {}
+export class ComentariosDto {
+}
