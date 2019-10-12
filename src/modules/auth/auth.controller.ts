@@ -19,7 +19,6 @@ export class AuthController{
     @Get('/login')
     @Render('login')
     loginIndex(@Request() req){
-        console.log(req.user)
         return;
     }
 

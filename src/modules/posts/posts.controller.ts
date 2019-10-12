@@ -16,7 +16,7 @@ export class PostsController {
     @UseGuards(AuthenticatedGuard)
     crearPost(@Body() newPost : PostDTO, @Req() req, @Res() res : Response){
         this.postService.crearPost({titulo: newPost.titulo, contenido: newPost.contenido}, req.user)
-        .then(res => {
+        .then(resp => {
             res.redirect('/crearpost')
         })
         .catch(err => {

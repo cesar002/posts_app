@@ -26,5 +26,9 @@ export class PostsService {
         this.postRepository.save(post)
     }
 
+    async obtenerPosts() : Promise<any>{
+        return await this.postRepository.find();
+    }
+
 
 }

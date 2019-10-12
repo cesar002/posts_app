@@ -20,12 +20,6 @@ export class UsuariosController {
         .catch(err => {
             return
         })
-
-        // if(user){
-        //     return {url: '/'}
-        // }
-
-        // return;
     }
 
 
