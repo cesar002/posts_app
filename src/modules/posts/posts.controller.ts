@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Body, UseGuards, Res } from '@nestjs/common';
+import { Controller, Get, Post, Req, Body, UseGuards, Res, Param } from '@nestjs/common';
 import { Response } from 'express'
 
 import {PostDTO} from './posts.dto'
@@ -21,6 +21,26 @@ export class PostsController {
         })
         .catch(err => {
             res.redirect('/')
+        })
+    }
+
+    @Get(':id')
+    verPost(@Param() param, @Req() req,  @Res() res : Response){
+        this.postService.verPost(param.id)
+        .then(post => {
+            if(!post){
+                return res.redirect('/')
+            }
+
+            let user = null;
+            if(req.user){
+                user = req.user
+            }
+
+            return res.render('verpost', {post, user})
+        })
+        .catch(err => {
+            return res.redirect('/')
         })
     }
 

@@ -4,4 +4,5 @@ export interface PostInterface{
     contenido : string;
     contenidoResumen?: string;
     fechaCreacion? : Date;
+    usuarioCreacion? : string;
 }

@@ -14,7 +14,7 @@ import { Usuario } from '../database/models/usuarios.entity'
             host: 'localhost',
             port: 3306,
             username: 'root',
-            password: 'gundam000',//password: '',
+            password: '',//password: '',
             database: 'postin_comentarios',
             entities: ['src/**/*.entity{.ts,.js}'],
             synchronize: true,

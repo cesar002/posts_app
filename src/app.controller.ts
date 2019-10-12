@@ -1,4 +1,6 @@
-import { Controller, Get, Render, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Render, UseGuards, Req, Res } from '@nestjs/common';
+import { Response } from 'express'
+
 import { AppService } from './app.service';
 import { AuthenticatedGuard } from './modules/auth/authenticated.guard';
 import { PostsService } from './modules/posts/posts.service';
@@ -12,43 +14,26 @@ export class AppController {
   ) {}
 
   @Get()
-  @Render('index')
-  home(@Req() req): any {
-    if(req.user){
-      return {
+  // @Render('index')
+  home(@Req() req, @Res() res : Response): any {
+
+    this.postService.obtenerPosts()
+    .then(posts => {
+        if(req.user){
+          return res.render('index',{
             user:{
               id: req.user.id_usuario,
               username: req.user.username,
-            }
-            
-      }
-    }
+            },
+            posts: posts
+          })
+        }
 
-    return
-    // this.postService.obtenerPosts()
-    // .then(resp =>{
-
-    //   let posts : PostInterface[] = []
-    //   resp.forEach(el => {
-    //     posts.push({
-    //       titulo: el.titulo,
-    //       contenido: el.contenido,
-    //       contenidoResumen: el.contenido.substring(0, 20) + '...'
-    //     })
-    //   });
-
-    //   if(req.user){
-    //     return {
-    //           user:{
-    //             id: req.user.id_usuario,
-    //             username: req.user.username,
-    //           }
-    //     }
-    //   }
-  
-    //   return { posts: posts }
-    // }).catch(err => {})
-
+        return res.render('index', {posts: posts})
+    })
+    .catch(err => {
+      return res.render('index',{})
+    })
   }
 
   @Get('/registrarse')
