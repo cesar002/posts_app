@@ -4,6 +4,10 @@ import { Repository } from 'typeorm'
 
 import { Post } from '../../database/models/posts.entity'
 import { Usuario } from '../../database/models/usuarios.entity'
+import { Comentario } from '../../database/models/comentarios.entity';
+
+import { ComentariosService } from '../comentarios/comentarios.service';
+
 import { PostInterface } from './posts.interface'
 
 
@@ -11,7 +15,8 @@ import { PostInterface } from './posts.interface'
 export class PostsService {
     constructor(
         @InjectRepository(Post)
-        private readonly postRepository : Repository<Post>
+        private readonly postRepository : Repository<Post>,
+        private readonly comentariosService : ComentariosService
     ){}
 
     
@@ -44,7 +49,15 @@ export class PostsService {
     }
 
     public async verPost(id:number) : Promise<any>{
-        return await this.postRepository.findOne(id, {relations: ['user']})
+        let post = await this.postRepository.findOne(id, {relations: ['user', 'comentarios']})
+        post.comentarios.forEach(el => {
+            this.comentariosService.obtenerSubComentarios(el)
+            .then(comment => {
+                el.comentarios_reply = comment
+            })
+            .catch(err => console.log(err))
+        })
+        return post
     }
 
     private convertirComentarioAResumen(contenido : string) : string{

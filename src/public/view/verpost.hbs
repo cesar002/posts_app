@@ -4,12 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.4.2/handlebars.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.4.2/handlebars.runtime.min.js"></script>
+    <script src="https://kit.fontawesome.com/e03b0a66f4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+        .comment-wrapper .panel-body {
+            max-height:650px;
+            overflow:auto;
+        }
+
+        .comment-wrapper .media-list .media img {
+            width:64px;
+            height:64px;
+            border:2px solid #e5e7e8;
+        }
+
+        .comment-wrapper .media-list .media {
+            border-bottom:1px dashed #efefef;
+            margin-bottom:25px;
+        }
+    </style>
     <title>Post</title>
 </head>
 <body>
@@ -62,8 +78,66 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-1"></div>
         </div>
+        {{#if user}}
+        <div class="row pt-5">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        Comentarios
+                    </div>
+                    <form method="POST" action="/comentarios/agregarComentario/{{post.id_post}}">
+                        <textarea class="form-control" placeholder="Escribe un comentario..." rows="3" name="comentario"></textarea>
+                        <br>
+                        <button type="submit" class="btn btn-info pull-right">Comentar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+        {{/if}}
+        {{#each post.comentarios as |comentario|}}
+        <div class="row pb-2 pt-3">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="comment-wrapper">
+                    <div class="panel panel-info">
+                        <div class="panel-body">
+                            <div class="clearfix"></div>
+                            <hr>
+                            <ul class="media-list">
+                                <li class="media">
+                                    <div class="media-body">
+                                        <strong class="text-success">@MartinoMont</strong>
+                                        <p>
+                                           {{comentario.comentario}}
+                                        </p>
+                                        <a href="" class="far fa-thumbs-up" style="font-size: 1em; text-decoration: none; color: green">
+                                            10
+                                        </a>
+                                        <a href="" class="far fa-thumbs-down" style="font-size: 1em; text-decoration: none; color: red">
+                                            5
+                                        </a>
+                                        <button class="btn btn-primary btn-sm float-right mr-5" type="button" onclick="mostrarReplyForm({{comentario.id_comentario}})">Contestar</button>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div id="reply-{{comentario.id_comentario}}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2"></div>
     </div>
+    {{/each}}
 </body>
+<script type="text/javascript">
+    function mostrarReplyForm(id){
+        let div = document.getElementById(`reply-${id}`)
+        div.innerHTML = ""
+        div.insertAdjacentHTML('beforeend',"<form method='POST' action='/comentarios/agregarComentario/{{post.id_post}}'><textarea class='form-control' placeholder='Escribe un comentario...' rows='3' name='comentario'></textarea><br><button type='submit' class='btn btn-info pull-right'>Comentar</button></form>")
+    }
+</script>
 </html>

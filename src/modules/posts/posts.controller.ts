@@ -28,6 +28,7 @@ export class PostsController {
     verPost(@Param() param, @Req() req,  @Res() res : Response){
         this.postService.verPost(param.id)
         .then(post => {
+            console.log(post)
             if(!post){
                 return res.redirect('/')
             }
@@ -40,6 +41,7 @@ export class PostsController {
             return res.render('verpost', {post, user})
         })
         .catch(err => {
+            console.log(err)
             return res.redirect('/')
         })
     }
