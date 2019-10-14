@@ -13,17 +13,34 @@ export class ComentariosController {
 
     @Post('agregarComentario/:idPost')
     @UseGuards(AuthenticatedGuard)
-    agregarComentario(@Param() param, @Body() cometarioDTO : ComentarioDTO, @Req() req, @Res() res : Response){
-        if(!cometarioDTO.comentario || cometarioDTO.comentario == ""){
+    agregarComentario(@Param() param, @Body() comentarioDTO : ComentarioDTO, @Req() req, @Res() res : Response){
+        if(!comentarioDTO.comentario || comentarioDTO.comentario == ""){
             return res.redirect(`/posts/${param.idPost}`);
         }
-        this.comentariosService.agregarComentario(cometarioDTO.comentario, param.idPost, req.user)
+        this.comentariosService.agregarComentario(comentarioDTO.comentario, param.idPost, req.user)
         .then(comment => {
             return res.redirect(`/posts/${param.idPost}`)
         })
         .catch(err =>{
             return res.redirect(`/posts/${param.idPost}`);
         })
+    }
+
+    @Post('agregarComentario/reply/:idComment/:idPost')
+    @UseGuards(AuthenticatedGuard)
+    public async agregarReply(@Param() param, @Body() comentarioDTO : ComentarioDTO, @Req() req, @Res() res : Response){
+        if(!comentarioDTO.comentario || comentarioDTO.comentario == ""){
+            return res.redirect(`/posts/${param.idPost}`);
+        }
+
+        try{
+            // console.log(comentarioDTO)
+            this.comentariosService.agregarComentarioReply(comentarioDTO.comentario, param.idPost, param.idComment, req.user)
+            return res.redirect(`/posts/${param.idPost}`)
+        }catch(error){
+            console.log(error)
+            return res.redirect(`/posts/${param.idPost}`)
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
@@ -30,6 +30,35 @@ export class ComentariosService {
         comentario.comentario_padre = null;        
 
         return await this.comentarioRepository.save(comentario)
+    }
+
+    public async agregarComentarioReply(comment : string, idPost : number, idCommentPadre : number, user : Usuario) : Promise<any>{
+        let post = await this.postRepository.findOne(idPost);
+        if(!post){
+            throw new ConflictException('No se encuentra el post')
+        }
+
+        let comentarioPadre = await this.obtenerComentarioPost(post, idCommentPadre);
+        if(!comentarioPadre){
+            throw new ConflictException('No se encuentra el comentario padre')
+        }
+
+        let replyComentario = new Comentario();     
+        replyComentario.comentario = comment;
+        replyComentario.fecha_publicacion = new Date();
+        replyComentario.user = user;
+        replyComentario.post = post;
+        replyComentario.comentario_padre = comentarioPadre;
+
+        return await this.comentarioRepository.save(replyComentario)
+    }
+
+    public async obtenerComentariosPost(post : Post) : Promise<any>{
+        return await this.comentarioRepository.find({where: {post},relations: ['user']})
+    }
+
+    public async obtenerComentarioPost(post : Post, idComentario : number) : Promise<any>{
+        return await this.comentarioRepository.findOne(idComentario, {where: {post},relations: ['user']})
     }
 
     public async obtenerSubComentarios(comentarioPadre : Comentario) : Promise<any>{

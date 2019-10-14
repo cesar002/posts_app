@@ -25,10 +25,9 @@ export class PostsController {
     }
 
     @Get(':id')
-    verPost(@Param() param, @Req() req,  @Res() res : Response){
-        this.postService.verPost(param.id)
-        .then(post => {
-            console.log(post)
+    public async verPost(@Param() param, @Req() req,  @Res() res : Response){
+        try{
+            let post = await this.postService.verPost(param.id)
             if(!post){
                 return res.redirect('/')
             }
@@ -38,12 +37,32 @@ export class PostsController {
                 user = req.user
             }
 
+            console.log(post)
+            // console.log(user)
+            console.log('-----------------------------')
             return res.render('verpost', {post, user})
-        })
-        .catch(err => {
-            console.log(err)
+
+        }catch(error){
+            console.log(error)
             return res.redirect('/')
-        })
+        }
+        // .then(post => {
+        //     console.log(post)
+        //     if(!post){
+        //         return res.redirect('/')
+        //     }
+
+        //     let user = null;
+        //     if(req.user){
+        //         user = req.user
+        //     }
+
+        //     return res.render('verpost', {post, user})
+        // })
+        // .catch(err => {
+        //     console.log(err)
+        //     return res.redirect('/')
+        // })
     }
 
 }

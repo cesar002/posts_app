@@ -16,7 +16,8 @@ export class PostsService {
     constructor(
         @InjectRepository(Post)
         private readonly postRepository : Repository<Post>,
-        private readonly comentariosService : ComentariosService
+        @InjectRepository(Comentario)
+        private readonly comentariosRepository : Repository<Comentario>
     ){}
 
     
@@ -49,14 +50,9 @@ export class PostsService {
     }
 
     public async verPost(id:number) : Promise<any>{
-        let post = await this.postRepository.findOne(id, {relations: ['user', 'comentarios']})
-        post.comentarios.forEach(el => {
-            this.comentariosService.obtenerSubComentarios(el)
-            .then(comment => {
-                el.comentarios_reply = comment
-            })
-            .catch(err => console.log(err))
-        })
+        let post = await this.postRepository.findOne(id, {relations: ['user']})
+        let comentarios = await this.comentariosRepository.find({where:{post, comentario_padre: null}, relations: ['user', 'comentarios_reply', 'likes']})
+        post.comentarios = comentarios
         return post
     }
 
